@@ -3,9 +3,8 @@ var expect = require('expect.js');
 var Transmitter = require('../pulsar-transmitter.js');
 
 var dgram = require("dgram");
-var server = dgram.createSocket("udp4");
 
-var createListener = function () {
+var createListener = function (server, port) {
   server.on("listening", function () {
     var address = server.address();
     console.log("server listening " +
@@ -19,22 +18,14 @@ var createListener = function () {
     expect().fail("dgram socket failure");
   });
 
-  server.bind(6660);
+  server.bind(port);
 };
 
-var destroyListener = function () {
+var destroyListener = function (server) {
   server.close();
 }
 
 describe ('Transmitter', function() {
-
-  before( function() {
-    createListener();
-  });
-
-  after ( function () {
-    destroyListener();
-  });
 
   describe ('#transmit()', function() {
     it ('should transmit information via UDP', function (done) {
@@ -42,17 +33,21 @@ describe ('Transmitter', function() {
         "Pulse": "lolwat"
       }
 
+      var server = dgram.createSocket("udp4");
+      createListener(server, 6660);
+      
       server.on("message", function (msg, rinfo) {
+        destroyListener(server);
         server.recievedPulse = JSON.parse(msg);
+        expect(server.recievedPulse).to.be.ok();
         done();
       });
-
 
       var t = new Transmitter();
       t.transmit(pulse);
     });
 
-    it ('should transmit the given valid JSON wrapped in a Pulsar packet', function () {
+    it ('should transmit the given valid JSON wrapped in a Pulsar packet', function (done) {
       var pulse = {
         Json: "Information",
         Things: [
@@ -67,19 +62,37 @@ describe ('Transmitter', function() {
          ]
       }
 
+      var server = dgram.createSocket("udp4");
+      createListener(server, 6660);
+
       server.on("message", function (msg, rinfo) {
+        destroyListener(server);
         server.recievedPulse = JSON.parse(msg);
         expect(server.recievedPulse).to.eql(expectedPulse);
         done();
       });
 
-
       var t = new Transmitter();
       t.transmit(pulse);
     });
 
-    it ('should transmit packets to port 6660', function () {
-      expect().fail();
+    it ('should transmit packets to port 6660', function (done) {
+      var pulse = {
+        Content: "hello friend"
+      };
+
+      var server = dgram.createSocket("udp4");
+      createListener(server, 6660);
+
+      server.on("message", function (msg, rinfo) {
+        destroyListener(server);
+        server.recievedPulse = JSON.parse(msg);
+        expect(server.recievedPulse).to.be.ok();
+        done();
+      });
+
+      var t = new Transmitter();
+      t.transmit(pulse);
     });
 
   })
