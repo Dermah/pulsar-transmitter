@@ -53,7 +53,29 @@ describe ('Transmitter', function() {
     });
 
     it ('should transmit the given valid JSON wrapped in a Pulsar packet', function () {
-      expect().fail();
+      var pulse = {
+        Json: "Information",
+        Things: [
+          "string"
+        ]
+      }
+
+      var expectedPulse = {
+         Pulsar: "0.0.1",
+         Pulses: [
+            pulse
+         ]
+      }
+
+      server.on("message", function (msg, rinfo) {
+        server.recievedPulse = JSON.parse(msg);
+        expect(server.recievedPulse).to.eql(expectedPulse);
+        done();
+      });
+
+
+      var t = new Transmitter();
+      t.transmit(pulse);
     });
 
     it ('should transmit packets to port 6660', function () {
