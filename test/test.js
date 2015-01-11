@@ -23,7 +23,7 @@ var createListener = function (server, port) {
 
 var destroyListener = function (server) {
   server.close();
-}
+};
 
 describe ('Transmitter', function() {
 
@@ -31,7 +31,7 @@ describe ('Transmitter', function() {
     it ('should transmit information via UDP', function (done) {
       var pulse = {
         "Pulse": "lolwat"
-      }
+      };
 
       var server = dgram.createSocket("udp4");
       createListener(server, 6660);
@@ -53,14 +53,14 @@ describe ('Transmitter', function() {
         Things: [
           "string"
         ]
-      }
+      };
 
       var expectedPulse = {
          Pulsar: "0.0.1",
          Pulses: [
             pulse
          ]
-      }
+      };
 
       var server = dgram.createSocket("udp4");
       createListener(server, 6660);
@@ -117,7 +117,7 @@ describe ('Transmitter', function() {
     t.transmit(pulse);
     t.transmit(pulse);
 
-  })
+  });
 
   });
-})
+});

@@ -12,7 +12,7 @@ Transmitter.prototype.transmit = function (packet) {
       //console.log(packet);
     });
   });
-}
+};
 
 function wrapPulse(pulse) {
   return {
@@ -20,7 +20,7 @@ function wrapPulse(pulse) {
     "Pulses": [
       pulse
     ]
-  }
+  };
 }
 
 module.exports = Transmitter;
