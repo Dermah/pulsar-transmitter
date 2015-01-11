@@ -95,5 +95,29 @@ describe ('Transmitter', function() {
       t.transmit(pulse);
     });
 
+    it ('should be able to transmit multiple times', function (done) {
+    var pulse = {
+      "Content": "pulse1"
+    };
+    var counter = 0;
+
+
+    var server = dgram.createSocket("udp4");
+    createListener(server, 6660);
+
+    server.on("message", function (msg, rinfo) {
+      counter++;
+      if (counter === 3) {
+        done();
+      }
+    });
+
+    var t = new Transmitter();
+    t.transmit(pulse);
+    t.transmit(pulse);
+    t.transmit(pulse);
+
   })
+
+  });
 })
