@@ -4,6 +4,7 @@ var Transmitter = function () {};
 
 Transmitter.prototype.transmit = function (packet) {
   var client = dgram.createSocket("udp4");
+  packet = wrapPulse(packet);
   packet = new Buffer(JSON.stringify(packet));
   client.bind(function() {
     client.setBroadcast(true);
@@ -11,6 +12,15 @@ Transmitter.prototype.transmit = function (packet) {
       //console.log(packet);
     });
   });
+}
+
+function wrapPulse(pulse) {
+  return {
+    "Pulsar": "0.0.1",
+    "Pulses": [
+      pulse
+    ]
+  }
 }
 
 module.exports = Transmitter;
