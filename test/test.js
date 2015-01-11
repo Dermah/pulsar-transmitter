@@ -7,12 +7,12 @@ var dgram = require("dgram");
 var createListener = function (server, port) {
   server.on("listening", function () {
     var address = server.address();
-    console.log("server listening " +
-      address.address + ":" + address.port);
+    //console.log("server listening " +
+    //  address.address + ":" + address.port);
   });
 
   server.on("error", function (err) {
-    console.log("server error:\n" + err.stack);
+    //console.log("server error:\n" + err.stack);
     server.close();
     cb("dgram socket failure: " + err.stack);
     expect().fail("dgram socket failure");

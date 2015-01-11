@@ -8,7 +8,7 @@ Transmitter.prototype.transmit = function (packet) {
   client.bind(function() {
     client.setBroadcast(true);
     client.send(packet, 0, packet.length, 6660, "255.255.255.255", function(err, bytes) {
-      console.log(packet);
+      //console.log(packet);
     });
   });
 }
