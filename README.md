@@ -3,7 +3,11 @@ pulsar-transmitter
 
 Node.js implementation of a Pulsar Transmitter
 
-## How to test
+## Install
+
+    npm install
+
+## Test
 
     npm test
 
