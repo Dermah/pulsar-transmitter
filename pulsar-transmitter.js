@@ -3,15 +3,16 @@ var dgram = require('dgram');
 var Transmitter = function () {};
 
 Transmitter.prototype.transmit = function (packet) {
-  var client = dgram.createSocket("udp4");
+  var socket = dgram.createSocket("udp4");
 
   packet = wrapPulse(packet);
   packet = new Buffer(JSON.stringify(packet));
   
-  client.bind(function() {
-    client.setBroadcast(true);
-    client.send(packet, 0, packet.length, 6660, "255.255.255.255", function(err, bytes) {
-      client.close();
+  socket.bind(function() {
+    socket.setBroadcast(true);
+    socket.send(packet, 0, packet.length, 6660, "255.255.255.255", function(err, bytes) {
+      socket.close();
+      console.log("Sent: " + packet);
     });
   });
 };
