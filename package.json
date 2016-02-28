@@ -1,5 +1,5 @@
 {
-  "name": "pulsar-transmitter",
+  "name": "@dermah/pulsar-transmitter",
   "version": "0.1.0",
   "description": "The pulsar packet transmitter",
   "main": "index.js",
