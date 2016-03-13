@@ -12,7 +12,7 @@ var Transmitter = function (config) {
     });
   });
 
-  var Processor = require('./key-processor.js');
+  var Processor = require('@dermah/pulsar-input-keyboard');
   var processor = new Processor(io, config);
 
   // Set up keypress detection in stdin
