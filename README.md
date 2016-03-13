@@ -9,7 +9,7 @@ Very tightly coupled with [pulsar `v0.2.x`](https://github.com/Dermah/pulsar/tre
 This will start a pulsar server thing at `localhost:3000`:
 
 ```JavaScript
-var transmitter = require('pulsar-transmitter')(config);
+var transmitter = require('@dermah/pulsar-transmitter')(config);
 ```
 
 You can control pulses sent using the keyboard in the terminal window.
