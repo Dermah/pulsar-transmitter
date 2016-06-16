@@ -4,7 +4,7 @@ var Transmitter = function (config) {
   router(config);
 
   var io = require('socket.io')(router.server);
-  // Socket.io connection handling 
+  // Socket.io connection handling
   io.on('connection', function(socket){
     console.log('PULSAR: client connected');
     socket.on('disconnect', function() {
@@ -13,7 +13,17 @@ var Transmitter = function (config) {
   });
 
   var Processor = require('@dermah/pulsar-input-keyboard');
-  var processor = new Processor(io, config);
+  var processor = new Processor(config);
+
+  processor.on('pulse', pulse => {
+    io.emit('pulse', pulse)
+  });
+  processor.on('pulsar control', pulse => {
+    io.emit('pulsar control', pulse)
+  });
+  processor.on('pulse update', pulse => {
+    io.emit('pulse update', pulse);
+  });
 }
 
 module.exports = Transmitter;
