@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/Dermah/pulsar-transmitter",
   "dependencies": {
-    "@dermah/pulsar-input-keyboard": "^0.2.0",
     "express": "^4.13.4",
     "jade": "^1.11.0",
     "jsonfile": "^2.2.3",
