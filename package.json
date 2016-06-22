@@ -23,7 +23,6 @@
   "homepage": "https://github.com/Dermah/pulsar-transmitter",
   "dependencies": {
     "express": "^4.13.4",
-    "jade": "^1.11.0",
     "jsonfile": "^2.2.3",
     "socket.io": "^1.4.5"
   }

@@ -12,12 +12,8 @@ var Router = function (config) {
   var totalCols = config.totalCols;
   var totalRows = config.totalRows;
 
-  // Use jade page template thing
-  app.set('views', './pages');
-  app.set('view engine', 'jade');
-
   // What to do when a client connects to the server
-  app.get('/', function(req, res){
+  app.get('/', (req, res) => {
 
     // Default configuration variables for client
     var config = {
@@ -40,7 +36,25 @@ var Router = function (config) {
       config.row = parseInt(req.query.row);
 
       // Serve the html page, injecting configuration for pulsar.js to use
-      res.render('index', { config: JSON.stringify(config) } );
+      res.send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pulsar</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { overflow: hidden; }
+    </style>
+
+    <script>
+      var pulsarInitConfig = ${JSON.stringify(config)};
+    </script>
+  </head>
+  <body>
+    <script src="pulsar.js"></script>
+  </body>
+</html>
+`)
+
       console.log("SERVER: Sent PULSAR to : " + config.col + " row: " + config.row);
     }
   });
