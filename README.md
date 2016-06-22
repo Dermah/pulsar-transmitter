@@ -6,13 +6,12 @@ Very tightly coupled with [pulsar `v0.2.x`](https://github.com/Dermah/pulsar/tre
 
 ## Usage
 
-This will start a pulsar server thing at `localhost:3000`:
+This will start a pulsar server thing at `http://localhost:3000`:
 
 ```JavaScript
-var transmitter = require('@dermah/pulsar-transmitter')(config);
+let Detector = require('@dermah/pulsar-transmitter');
+let detector = new Detector(config);
 ```
-
-You can control pulses sent using the keyboard in the terminal window.
 
 `config` is an object that looks like:
 
@@ -24,16 +23,18 @@ You can control pulses sent using the keyboard in the terminal window.
 }
 ```
 
-where `totalCols` and `totalRows` are the number of columns and rows respectively that there will be in the pulsar grid, and `songPath` is the relative path to an mp3 file that can be played by pressing the `F8` key.
+where `totalCols` and `totalRows` are the number of columns and rows respectively that there will be in the pulsar grid. `songPath` is used by other modules.
 
-## Capabilities
+Give pulses to the detector like so:
 
-This transmitter handles too much of pulsar's logic. It should only handle packet transmission to pulsar receivers. It currently handles:
-* Data transmission to pulsar receivers
-* Serving of js and image assets
-* Keyboard input to transmitter
-* Keylogging and playback
-* Timed/repeated/combination release of pulsar packets
-* Music playing
+```JavaScript
+detector.detect('pulse', pulse);
+```
 
-This is all documented in [pulsar](https://github.com/Dermah/pulsar/tree/v0.2.1) where the actual code should be. These features will be extracted in future releases. 
+It's a good idea to pass pulses emitted an pulse emitter (like [`pulsar-input-keyboard`](https://github.com/Dermah/pulsar-input-keyboard)) straight to the detector. If you have a pulse emitter in `input`, you could do this like so:
+
+```JavaScript
+input.on('pulse', pulse => {
+  detector.detect('pulse', pulse);
+});
+```
