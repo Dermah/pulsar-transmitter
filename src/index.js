@@ -1,29 +1,21 @@
-var Transmitter = function (config) {
+class Detector {
+  constructor(config) {
+    let router = require('./router.js');
+    router(config);
 
-  var router = require('./router.js');
-  router(config);
-
-  var io = require('socket.io')(router.server);
-  // Socket.io connection handling
-  io.on('connection', function(socket){
-    console.log('PULSAR: client connected');
-    socket.on('disconnect', function() {
-      console.log('PULSAR: client disconnected');
+    this.io = require('socket.io')(router.server);
+    // Socket.io connection handling
+    this.io.on('connection', function(socket){
+      console.log('PULSAR: client connected');
+      socket.on('disconnect', function() {
+        console.log('PULSAR: client disconnected');
+      });
     });
-  });
+  }
 
-  var Processor = require('@dermah/pulsar-input-keyboard');
-  var processor = new Processor(config);
-
-  processor.on('pulse', pulse => {
-    io.emit('pulse', pulse)
-  });
-  processor.on('pulsar control', pulse => {
-    io.emit('pulsar control', pulse)
-  });
-  processor.on('pulse update', pulse => {
-    io.emit('pulse update', pulse);
-  });
+  detect (pulseType, pulse) {
+    this.io.emit(pulseType, pulse);
+  }
 }
 
-module.exports = Transmitter;
+module.exports = Detector;
