@@ -23,7 +23,7 @@ var Router = function (config) {
       col: (nextId % totalCols) + 1,
       row: Math.floor(nextId/totalCols) + 1
     };
-    
+
     // If the client has not specified where it is in the grid,
     // redirect to place it as the next in the grid
     // Otherwise, honour the request for the specified column and row
@@ -60,7 +60,7 @@ var Router = function (config) {
   });
 
   app.get('/pulsar.js', function(req, res){
-    res.sendFile('/dist/pulsar.js', {root: "./"});
+    res.sendFile(require.resolve('@dermah/pulsar-detector-p5'));
   });
 
   app.get('/astronaut.gif', function(req, res){
