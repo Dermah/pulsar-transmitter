@@ -1,73 +1,94 @@
 // Web server and communication requires
-var app = require('express')();
-var http = require('http').Server(app);
+let http = require('http');
+let Express = require('express');
 
-var Router = function (config) {
+class Router {
+  constructor (config) {
+    let {
+      port,
+      module
+    } = config;
 
-  http.listen(3000, function(){
-    console.log('SERVER: listening on *:3000');
-  });
+    var app = Express();
+    this.server = http.Server(app);
 
-  var nextId = 0;
-  var totalCols = config.totalCols;
-  var totalRows = config.totalRows;
+    this.server.listen(port, () => {
+      console.log(`${module}: listening on *:${port}`);
+    });
 
-  // What to do when a client connects to the server
-  app.get('/', (req, res) => {
+    var nextId = 0;
+    var totalCols = config.totalCols;
+    var totalRows = config.totalRows;
 
-    // Default configuration variables for client
-    var config = {
-      id: nextId,
-      totalCols: totalCols,
-      totalRows: totalRows,
-      col: (nextId % totalCols) + 1,
-      row: Math.floor(nextId/totalCols) + 1
-    };
+    // What to do when a client connects to the server
+    app.get(`/`, (req, res) => {
 
-    // If the client has not specified where it is in the grid,
-    // redirect to place it as the next in the grid
-    // Otherwise, honour the request for the specified column and row
-    if (!req.query.col || !req.query.row) {
-      res.redirect(302, "/?col=" + config.col + "&row=" + config.row);
-      console.log("SERVER: Sent redirect to col: " + config.col + " row: " + config.row);
-      nextId++;
-    } else {
-      config.col = parseInt(req.query.col);
-      config.row = parseInt(req.query.row);
+      // Default configuration variables for client
+      var config = {
+        id: nextId,
+        totalCols: totalCols,
+        totalRows: totalRows,
+        col: (nextId % totalCols) + 1,
+        row: Math.floor(nextId/totalCols) + 1
+      };
 
-      // Serve the html page, injecting configuration for pulsar.js to use
-      res.send(`<!DOCTYPE html>
-<html>
-  <head>
-    <title>Pulsar</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { overflow: hidden; }
-    </style>
+      // If the client has not specified where it is in the grid,
+      // redirect to place it as the next in the grid
+      // Otherwise, honour the request for the specified column and row
+      if (!req.query.col || !req.query.row) {
+        res.redirect(302, `/?col=` + config.col + "&row=" + config.row);
+        console.log("SERVER: Sent redirect to col: " + config.col + " row: " + config.row);
+        nextId++;
+      } else {
+        config.col = parseInt(req.query.col);
+        config.row = parseInt(req.query.row);
 
-    <script>
-      var pulsarInitConfig = ${JSON.stringify(config)};
-    </script>
-  </head>
-  <body>
-    <script src="pulsar.js"></script>
-  </body>
-</html>
-`)
+        // Serve the html page, injecting configuration for pulsar.js to use
+        res.send(`<!DOCTYPE html>
+  <html>
+    <head>
+      <title>Pulsar</title>
+      <link rel="stylesheet" type="text/css" href="/normalize.css">
+      <style media="screen" type="text/css">
+        html, body {
+          margin: 0;
+          overflow: hidden;
+        }
+        *, *:before, *:after {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+      </style>
+      <script>
+        var pulsarInitConfig = ${JSON.stringify(config)};
+      </script>
+    </head>
+    <body>
+      <div id="react-target">
+      </div>
+      <script src="/${module}"></script>
+    </body>
+  </html>
+  `)
 
-      console.log("SERVER: Sent PULSAR to : " + config.col + " row: " + config.row);
-    }
-  });
+        console.log("SERVER: Sent PULSAR to : " + config.col + " row: " + config.row);
+      }
+    });
 
-  app.get('/pulsar.js', function(req, res){
-    res.sendFile(require.resolve('@dermah/pulsar-detector-p5'));
-  });
+    app.get(`/${module}`, function(req, res){
+      console.log(config);
+      res.sendFile(require.resolve(module));
+    });
 
-  app.get('/astronaut.gif', function(req, res){
-    res.sendFile('/astronaut.gif', {root: "./"});
-  });
+    app.get(`/normalize.css`, (req, res) =>
+      res.sendFile(require.resolve('normalize-css/normalize.css'))
+    );
 
-};
+    app.get('/astronaut.gif', function(req, res){
+      res.sendFile('/astronaut.gif', {root: "./"});
+    });
+  }
+}
 
 module.exports = Router;
-module.exports.server = http;
